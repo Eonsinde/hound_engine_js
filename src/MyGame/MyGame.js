@@ -1,64 +1,76 @@
 function MyGame(htmlCanvasID) {
+    // variables of the constant color shader
+    this.mConstColorShader = null;
+
+    // The camera
+    this.mCamera = null;
+
+    // the squares
+    this.mWhiteSq = null;
+    this.mRedSq = null;
+
+    // initialize webGl context
     hEngine.Core.initializeWebGL(htmlCanvasID);
 
+    // initialize game
+    this.initialize();
+}
+
+
+MyGame.prototype.initialize = function(){
+    var gl = hEngine.Core.getGL();
+    let vWidth = gl.canvas.clientWidth; // viewport Width
+    let vHeight = gl.canvas.clientHeight; // viewport height
+
     // The shader for drawing
-    this.mShader = new SimpleShader("vertex", "fragment");
+    this.mConstColorShader = new SimpleShader("vertex", "fragment");
     this.mCamera = new Camera2D(
-        vec2.fromValues(20, 60),
+        vec2.fromValues(0, 0),
         20,
-        [20, 40, 600, 300]
+        [0, 0, vWidth, vHeight]
     );
 
-    this.mWhiteSq = new Renderable(this.mShader);
+    this.mWhiteSq = new Renderable(this.mConstColorShader);
     this.mWhiteSq.setColor([1, 0, 1, 1]);
-    this.mRedSq = new Renderable(this.mShader);
+    this.mRedSq = new Renderable(this.mConstColorShader);
     this.mRedSq.setColor([1, 0, 0, 1]);
-    this.mRedSq.getTransformComponent().setSize(1, 1);
-    this.mRedSq.getTransformComponent().setPosition(0, 0);
-
-
-    // Step C1: Clear the canvas
-    // hEngine.Core.clearCanvas([0.1, 0.12, 0.15, 1]);
-
-    this.mCamera.setupViewProjection();
-
-    var gl = hEngine.Core.getGL();
-
-    // gl.viewport(20, 40, 600, 300);
-    // gl.scissor(20, 40, 600, 300);
-    gl.viewport(0, 0, 640, 480);
-    gl.scissor(0, 0, 640, 480);
-    
-    gl.enable(gl.SCISSOR_TEST);
-    // hEngine.Core.clearCanvas([0.8, 0.8, 0.8, 1.0]); // clear the scissor area
-    hEngine.Core.clearCanvas([0.1, 0.12, 0.15, 1]);
-    gl.disable(gl.SCISSOR_TEST);
-
-    // vpMatrix
-    var viewMatrix = mat4.create();
-    var projMatrix = mat4.create();
-    // Step F1: define the view matrix
-    // mat4.lookAt(viewMatrix, [20, 60, 10], [20, 60, 0], [0, 1, 0]); // pos, target, up
-    // viewMatrix = m4.lookAt([20, 60, 10], [20, 60, 0], [0, 1, 0]); // pos, target, up
-    viewMatrix = m4.lookAt([0, 0, 1], [0, 0, 0], [0, 1, 0]); // pos, target, up
-
-    // mat4.ortho(projMatrix, -100, 100, -50, 50, 0, 1000);
-    projMatrix = m4.ortho(-1, 1, -1, 1, 0, 1000); // Left, Right, Bottom, Up, zNear, zFar
-    // projMatrix = m4.ortho(gl.canvas.clientWidth, gl.canvas.clientHeight);
-    console.log(projMatrix);
-
-    var vpMatrix = mat4.create();
-    mat4.multiply(vpMatrix, projMatrix, viewMatrix);
-
-
-    // make changes to game objects
-    // this.mRedSq.getTransformComponent().setSize(1.2, 1.2); 
-    // trying to use manual translation for the view matrix which is represented by vpMatrix for now
-    // mat4.translate(vpMatrix, vpMatrix, vec3.fromValues(.5, .5, 0));
-    // mat4.multiply(vpMatrix, projMatrix, vpMatrix);
-
-    vpMatrix = m4.multiply(projMatrix, viewMatrix);
-    this.mRedSq.draw(vpMatrix);
+   
+    // start game loop
+    hEngine.GameLoop.start(this);
 }
+
+// The update function, updates the application state. Make sure to _NOT_ draw
+// anything from this function!
+MyGame.prototype.update = function() {
+    this.mWhiteSq.getTransformComponent().setPosition(.5, .5);
+    // For this very simple game, let's move the white square and pulse the red
+    // Step A: move the white square
+    var whiteTransform = this.mWhiteSq.getTransformComponent();
+    // var deltaX = 0.05;
+    
+    // if (whiteTransform.getXPos() > 30) // this is the right-bound of the window
+    //     whiteTransform.setPosition(10, 60);
+    // whiteTransform.incXPosBy(deltaX);
+    whiteTransform.incRotationByDegree(1);
+    
+    // // Step B: pulse the red square
+    var redTransform = this.mRedSq.getTransformComponent();
+    if (redTransform.getWidth() > .7)
+        redTransform.setSize(.2, .2);
+    redTransform.incSizeBy(0.005);
+};
+
+MyGame.prototype.draw = function() {
+    // Step A: clear the canvas
+    // hEngine.Core.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
+    
+    // Step B: Activate the drawing Camera
+    this.mCamera.setupViewProjection();
+    
+    // draw squares
+    this.mWhiteSq.draw(this.mCamera.getVPMatrix());
+    this.mRedSq.draw(this.mCamera.getVPMatrix());
+};
+
 
 document.body.onload = new MyGame("game-viewport");

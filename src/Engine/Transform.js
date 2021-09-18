@@ -49,7 +49,21 @@ Transform.prototype.setRotationInRad = function(rotationInRadians) {
 Transform.prototype.getRotationInRad = function() { return this.mRotationInRad; }
 // convert rotation given rotation value in deg to rad
 Transform.prototype.setRotationInDegree = function (rotationInDegree){ this.setRotationInRad(rotationInDegree * Math.PI/180.0); };
+Transform.prototype.getRotationInDegree = function (){ return this.getRotationInRad() * 180/Math.PI; };
 
+
+// increase functions
+Transform.prototype.incXPosBy = function(value){
+    this.setXPos(this.getXPos() + value);
+}
+
+Transform.prototype.incRotationByDegree = function(value){
+    this.setRotationInDegree(this.getRotationInDegree() + value);
+}
+
+Transform.prototype.incSizeBy = function(value){
+    this.setSize(this.getWidth()+value, this.getHeight()+value);
+}
 
 // create our matrix data
 Transform.prototype.getTransformMatrix = function() {

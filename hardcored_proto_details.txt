@@ -24,3 +24,30 @@ const cubeVertexIndices = new Uint16Array([
         0xFF, 0xCC, 0xFF, 0xCC, 0xFF, 0xCC, 0xFF, 0xCC,
         0xCC, 0xFF, 0xCC, 0xFF, 0xCC, 0xFF, 0xCC, 0xFF,
       ]));
+
+
+// gl.viewport(20, 40, 600, 300);
+// gl.scissor(20, 40, 600, 300);
+gl.viewport(0, 0, vWidth, vHeight);
+gl.scissor(0, 0, vWidth, vHeight);
+
+gl.enable(gl.SCISSOR_TEST);
+// hEngine.Core.clearCanvas([0.8, 0.8, 0.8, 1.0]); // clear the scissor area
+hEngine.Core.clearCanvas([0.1, 0.12, 0.15, 1]);
+gl.disable(gl.SCISSOR_TEST);
+
+// vpMatrix
+var viewMatrix = mat4.create();
+var projMatrix = mat4.create();
+// Step F1: define the view matrix
+// mat4.lookAt(viewMatrix, [20, 60, 10], [20, 60, 0], [0, 1, 0]); // pos, target, up
+// viewMatrix = m4.lookAt([20, 60, 10], [20, 60, 0], [0, 1, 0]); // pos, target, up
+viewMatrix = m4.lookAt([0, 0, 1], [0, 0, 0], [0, 1, 0]); // pos, target, up
+
+// mat4.ortho(projMatrix, -100, 100, -50, 50, 0, 1000);
+projMatrix = m4.ortho(-1, 1, -1, 1, 0, 1000); // bottom, top, left, right, zNear, zFar
+
+// var vpMatrix = mat4.create();
+// mat4.multiply(vpMatrix, projMatrix, viewMatrix);
+
+let vpMatrix = m4.multiply(projMatrix, viewMatrix);

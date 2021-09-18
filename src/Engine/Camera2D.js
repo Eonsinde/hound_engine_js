@@ -12,7 +12,8 @@ function Camera2D(wcCenter, wcWidth, viewportData){
     this.mVPMatrix = mat4.create();
 
     // background color
-    this.mBgColor = [0.8, 0.8, 0.8, 1]; // RGB and Alpha
+    // this.mBgColor = [0.8, 0.8, 0.8, 1]; // RGB and Alpha
+    this.mBgColor = [0.1, 0.12, 0.15, 1]; 
 }
 
 // getters and setters
@@ -68,26 +69,37 @@ Camera2D.prototype.setupViewProjection = function() {
 
     // Step B: define the View-Projection matrix
     // Step B1: define the view matrix
-    mat4.lookAt(this.mViewMatrix,
-        [this.mWCCenter[0], this.mWCCenter[1], 10],// WC center
-        [this.mWCCenter[0], this.mWCCenter[1], 0], //
-        [0, 1, 0] // camUp
-    ); 
+    // mat4.lookAt(this.mViewMatrix,
+    //     [this.mWCCenter[0], this.mWCCenter[1], 10],// WC center
+    //     [this.mWCCenter[0], this.mWCCenter[1], 0], //
+    //     [0, 1, 0] // camUp
+    // ); 
 
-    // Step B2: define the projection matrix
-    var halfWCWidth = 0.5 * this.mWCWidth;
-    // WCHeight = WCWidth * viewportHeight / viewportWidth
-    var halfWCHeight = halfWCWidth * this.mViewport[3] / this.mViewport[2];
+    this.mViewMatrix = m4.lookAt([this.mWCCenter[0], this.mWCCenter[1], 1], 
+                            [this.mWCCenter[0], this.mWCCenter[1], 0], 
+                            [0, 1, 0]); // pos, target, up
     
-    mat4.ortho(this.mProjMatrix,
-        -halfWCWidth, // distant to left of WC
-        halfWCWidth, // distant to right of WC
-        -halfWCHeight, // distant to bottom of WC
-        halfWCHeight, // distant to top of WC
-        this.mNearPlane, // z-distant to near plane
-        this.mFarPlane  // z-distant to far plane
-    ); 
+    // var halfWCWidth = 0.5 * this.mWCWidth;
+    // // WCHeight = WCWidth * viewportHeight / viewportWidth
+    // var halfWCHeight = halfWCWidth * this.mViewport[3] / this.mViewport[2];
+    
+    // this.mProjMatrix = m4.ortho(-halfWCHeight, halfWCHeight, 
+    //                             -halfWCWidth, halfWCWidth, 
+    //                             this.mNearPlane, this.mFarPlane); // bottom, top, left, right, zNear, zFar
+
+    this.mProjMatrix = m4.ortho(-1, 1, 
+                                -1, 1, 
+                                this.mNearPlane, this.mFarPlane); // bottom, top, left, right, zNear, zFar                            
+    
+    // mat4.ortho(this.mProjMatrix,
+    //     -halfWCWidth, // distant to left of WC
+    //     halfWCWidth, // distant to right of WC
+    //     -halfWCHeight, // distant to bottom of WC
+    //     halfWCHeight, // distant to top of WC
+    //     this.mNearPlane, // z-distant to near plane
+    //     this.mFarPlane  // z-distant to far plane
+    // ); 
 
     // Step B3: concatnate view and project matrices
-    mat4.multiply(this.mVPMatrix, this.mProjMatrix, this.mViewMatrix);
+    this.mVPMatrix = m4.multiply(this.mProjMatrix, this.mViewMatrix);
 };
