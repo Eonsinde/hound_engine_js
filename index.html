@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hound | Game Engine</title>
+</head>
+<body>
+    <canvas width='640' height='480' id='game-viewport'></canvas>
+    
+    <script type="x-shader/x-vertex" id="vertex">
+        // to transform the vertex position
+        uniform mat4 uModel;
+        uniform mat4 uViewProjTransform;
+        
+        attribute vec3 aSquareVertexPosition;
+
+        void main(void) {
+            gl_Position =  uViewProjTransform * uModel * vec4(aSquareVertexPosition, 1.0);
+        }
+    </script>
+    <script type="x-shader/x-fragment" id="fragment">
+        precision mediump float; // sets the precision for floating point computation
+        uniform vec4 uPixelColor; // to transform the vertex position
+
+        void main(void) {
+            gl_FragColor = uPixelColor;
+        }
+    </script>
+
+    <!-- Vendors -->
+    <script type="text/javascript" src="./vendors/jsmathlib/dist/gl-matrix.js"></script>
+    <script>
+        window["mat2"] = glMatrix.mat2;
+        window["mat2d"] = glMatrix.mat2d;
+        window["mat3"] = glMatrix.mat3;
+        window["mat4"] = glMatrix.mat4;
+        window["quat"] = glMatrix.quat;
+        window["quat2"] = glMatrix.quat2;
+        window["vec2"] = glMatrix.vec2;
+        window["vec3"] = glMatrix.vec3;
+        window["vec4"] = glMatrix.vec4;
+        window["glMatrix"] = glMatrix.glMatrix;
+    </script>
+    <script src="./src/Engine/Math.js"></script>
+    <!-- <script type="text/javascript" src="./vendors/jsmathlib/src/vec2.js"></script>
+    <script type="text/javascript" src="./vendors/jsmathlib/src/vec3.js"></script>
+    <script type="text/javascript" src="./vendors/jsmathlib/src/vec4.js"></script> -->
+
+    <!-- Engine Scripts -->
+    <script src="./src/Engine//Core/Engine_Core.js"></script>
+    <script src="./src/Engine//Core/Engine_VertexBuffer.js"></script>
+    <script src="./src/Engine/SimpleShader.js"></script>
+    <script src="./src/Engine/Transform.js"></script>
+    <script src="./src/Engine/Renderable.js"></script>
+    <script src="./src/Engine/Camera2D.js"></script>
+
+    <!-- Game Script -->
+    <script src="./src/MyGame/MyGame.js"></script>
+</body>
+</html>
