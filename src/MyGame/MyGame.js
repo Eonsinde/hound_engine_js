@@ -13,7 +13,7 @@ function MyGame(htmlCanvasID) {
     this.mWhiteSq.setColor([1, 0, 1, 1]);
     this.mRedSq = new Renderable(this.mShader);
     this.mRedSq.setColor([1, 0, 0, 1]);
-    this.mRedSq.getTransformComponent().setSize(.1, .1);
+    // this.mRedSq.getTransformComponent().setSize(50, 50);
     this.mRedSq.getTransformComponent().setPosition(0, 0);
 
 
@@ -24,10 +24,10 @@ function MyGame(htmlCanvasID) {
 
     var gl = hEngine.Core.getGL();
 
-    gl.viewport(20, 40, 600, 300);
-    gl.scissor(20, 40, 600, 300);
-    // gl.viewport(0, 0, 640, 480);
-    // gl.scissor(0, 0, 640, 480);
+    // gl.viewport(20, 40, 600, 300);
+    // gl.scissor(20, 40, 600, 300);
+    gl.viewport(0, 0, 640, 480);
+    gl.scissor(0, 0, 640, 480);
     
     gl.enable(gl.SCISSOR_TEST);
     hEngine.Core.clearCanvas([0.8, 0.8, 0.8, 1.0]); // clear the scissor area
@@ -38,10 +38,11 @@ function MyGame(htmlCanvasID) {
     var projMatrix = mat4.create();
     // Step F1: define the view matrix
     // mat4.lookAt(viewMatrix, [20, 60, 10], [20, 60, 0], [0, 1, 0]); // pos, target, up
-    viewMatrix = m4.lookAt([20, 60, 10], [20, 60, 0], [0, 1, 0]); // pos, target, up
+    // viewMatrix = m4.lookAt([20, 60, 10], [20, 60, 0], [0, 1, 0]); // pos, target, up
+    viewMatrix = m4.lookAt([0, 0, 10], [0, 0, 0], [0, 1, 0]); // pos, target, up
 
     // mat4.ortho(projMatrix, -100, 100, -50, 50, 0, 1000);
-    projMatrix = m4.ortho(-100, 100, -50, 50, 0, 1000);
+    projMatrix = m4.ortho(-100, 100, -100, 100, 0, 1000); // Left, Right, Bottom, Up, zNear, zFar
     // projMatrix = m4.ortho(gl.canvas.clientWidth, gl.canvas.clientHeight);
     console.log(projMatrix);
 
