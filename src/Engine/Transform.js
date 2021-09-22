@@ -65,6 +65,10 @@ Transform.prototype.incSizeBy = function(value){
     this.setSize(this.getWidth()+value, this.getHeight()+value);
 }
 
+Transform.prototype.dcrSizeBy = function(value){
+    this.setSize(this.getWidth()-value, this.getHeight()-value);
+}
+
 // create our matrix data
 Transform.prototype.getTransformMatrix = function() {
     // Creates a blank identity matrix

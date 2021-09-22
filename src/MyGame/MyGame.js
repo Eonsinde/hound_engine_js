@@ -10,7 +10,7 @@ function MyGame(htmlCanvasID) {
     this.mRedSq = null;
 
     // initialize webGl context
-    hEngine.Core.initializeWebGL(htmlCanvasID);
+    hEngine.Core.initializeEngineCore(htmlCanvasID);
 
     // initialize game
     this.initialize();
@@ -42,22 +42,30 @@ MyGame.prototype.initialize = function(){
 // The update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function() {
-    this.mWhiteSq.getTransformComponent().setPosition(.5, .5);
-    // For this very simple game, let's move the white square and pulse the red
-    // Step A: move the white square
-    var whiteTransform = this.mWhiteSq.getTransformComponent();
-    // var deltaX = 0.05;
+    // this.mWhiteSq.getTransformComponent().setPosition(.5, .5);
+    // // For this very simple game, let's move the white square and pulse the red
+    // // Step A: move the white square
+    // var whiteTransform = this.mWhiteSq.getTransformComponent();
+    // // var deltaX = 0.05;
     
-    // if (whiteTransform.getXPos() > 30) // this is the right-bound of the window
-    //     whiteTransform.setPosition(10, 60);
-    // whiteTransform.incXPosBy(deltaX);
-    whiteTransform.incRotationByDegree(1);
+    // // if (whiteTransform.getXPos() > 30) // this is the right-bound of the window
+    // //     whiteTransform.setPosition(10, 60);
+    // // whiteTransform.incXPosBy(deltaX);
+    // whiteTransform.incRotationByDegree(1);
     
-    // // Step B: pulse the red square
-    var redTransform = this.mRedSq.getTransformComponent();
-    if (redTransform.getWidth() > .7)
-        redTransform.setSize(.2, .2);
-    redTransform.incSizeBy(0.005);
+    // // // Step B: pulse the red square
+    if (hEngine.Input.isKeyPressed(hEngine.Input.keys.Up)){
+        var redTransform = this.mRedSq.getTransformComponent();
+        if (redTransform.getWidth() > 1)
+            redTransform.setSize(1, 1);
+        redTransform.incSizeBy(0.005);
+    }
+    else if(hEngine.Input.isKeyPressed(hEngine.Input.keys.Down)){
+        var redTransform = this.mRedSq.getTransformComponent();
+        if (redTransform.getWidth() <= .2)
+            redTransform.setSize(.2, .2);
+        redTransform.dcrSizeBy(0.005);
+    }
 };
 
 MyGame.prototype.draw = function() {

@@ -7,7 +7,7 @@ hEngine.Core = (function(){ // the function is defined and automatically called 
     var mGL = null;
 
     // initialize webGL context
-    var initializeWebGL = function(htmlCanvasID){
+    var _initializeWebGL = function(htmlCanvasID){
         var canvas = document.querySelector(`#${htmlCanvasID}`);
 
         // Get the standard or experimental webgl and binds to the Canvas area
@@ -17,10 +17,13 @@ hEngine.Core = (function(){ // the function is defined and automatically called 
             document.write("<br><b>WebGL is not supported!</b>");
             return;
         }
-
-        // now initialize the VertexBuffer
-        hEngine.VertexBuffer.initialize();
     }
+
+    var initializeEngineCore = function(htmlCanvasID) {
+        _initializeWebGL(htmlCanvasID);
+        hEngine.VertexBuffer.initialize();
+        hEngine.Input.initialize();
+    };
 
     // set clear color for the color buffer
     var clearCanvas = function(color){
@@ -31,7 +34,7 @@ hEngine.Core = (function(){ // the function is defined and automatically called 
     // Accessor of the webgl context / getter
     var getGL = function() { return mGL; };
     // Contains the functions and variables that will be accessible.
-    var mPublic = { initializeWebGL, getGL, clearCanvas };
+    var mPublic = { _initializeWebGL, initializeEngineCore, getGL, clearCanvas };
     return mPublic;
 }());
 

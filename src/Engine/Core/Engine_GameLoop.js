@@ -14,10 +14,10 @@ hEngine.GameLoop = (function() {
     // The current loop state (running or should stop)
     var mIsLoopRunning = false;
 
-    // Reference to game logic
+    // Reference to game logic/object
     var mMyGame = null;
 
-    var _runLoop = function(){
+    var _runLoop = function(){ // game loop
         if (mIsLoopRunning){
             // Step A: set up for next call to _runLoop and update input!
             requestAnimationFrame( function(){_runLoop.call(mMyGame);} );
@@ -32,7 +32,8 @@ hEngine.GameLoop = (function() {
             // Update only every Milliseconds per frame.
             // If lag larger then update frames, update until caught up.
             while ((mLagTime >= kMPF) && mIsLoopRunning) {
-                this.update(); // call MyGame.update()
+                hEngine.Input.update(); // accept inputs
+                this.update(); // call MyGame.update() 
                 mLagTime -= kMPF;
             }
             
@@ -56,5 +57,6 @@ hEngine.GameLoop = (function() {
     var mPublic = { 
         start
     };
+
     return mPublic;
 } ());
