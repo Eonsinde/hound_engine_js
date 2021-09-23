@@ -51,3 +51,36 @@ projMatrix = m4.ortho(-1, 1, -1, 1, 0, 1000); // bottom, top, left, right, zNear
 // mat4.multiply(vpMatrix, projMatrix, viewMatrix);
 
 let vpMatrix = m4.multiply(projMatrix, viewMatrix);
+
+
+
+// async functionality
+let shaderCode = null;
+
+let getData = function(){
+    // fetch(filePath)
+    //     .then(response => { return response.text(); })
+    //     .then(result => { console.log(result); shaderCode = result});  
+    let resp =  fetch(filePath)
+                    .then(response => response.text());
+
+    return resp;
+}
+  
+shaderCode = await getData();
+console.log(shaderCode);
+
+
+async function getData(fileURL='') {
+    // Default options are marked with *
+    const response = await fetch(fileURL, {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        headers: {
+        'Content-Type': 'text/xml'
+        },
+    });
+
+    console.log("Response object", response);
+    console.log(response.text());
+    return response.text(); // get the text from response object
+}

@@ -5,30 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hound | Game Engine</title>
-</head>
-<body>
-    <canvas width='640' height='480' id='game-viewport'></canvas>
-    
-    <script type="x-shader/x-vertex" id="vertex">
-        // to transform the vertex position
-        uniform mat4 uModel;
-        uniform mat4 uViewProjTransform;
-        
-        attribute vec3 aSquareVertexPosition;
-
-        void main(void) {
-            gl_Position =  uViewProjTransform * uModel * vec4(aSquareVertexPosition, 1.0);
-        }
-    </script>
-    <script type="x-shader/x-fragment" id="fragment">
-        precision mediump float; // sets the precision for floating point computation
-        uniform vec4 uPixelColor; // to transform the vertex position
-
-        void main(void) {
-            gl_FragColor = uPixelColor;
-        }
-    </script>
-
     <!-- Vendors -->
     <script type="text/javascript" src="./vendors/jsmathlib/dist/gl-matrix.js"></script>
     <script>
@@ -48,11 +24,16 @@
     <script type="text/javascript" src="./vendors/jsmathlib/src/vec3.js"></script>
     <script type="text/javascript" src="./vendors/jsmathlib/src/vec4.js"></script> -->
 
-    <!-- Engine Scripts -->
+    <!-- Engine Core Scripts -->
     <script src="./src/Engine/Core/Engine_Core.js"></script>
     <script src="./src/Engine/Core/Engine_Input.js"></script>
     <script src="./src/Engine/Core/Engine_VertexBuffer.js"></script>
     <script src='./src/Engine/Core/Engine_GameLoop.js'></script>
+    <!-- Resource Handling -->
+    <script src="./src/Engine/Resources/Engine_ResourceMap.js"></script>
+    <script src="./src/Engine/Resources/Engine_TextFileLoader.js"></script>
+    <script src="./src/Engine/Resources/Engine_DefaultResources.js"></script>
+    <!-- Others/Miscellaneous -->
     <script src="./src/Engine/SimpleShader.js"></script>
     <script src="./src/Engine/Transform.js"></script>
     <script src="./src/Engine/Renderable.js"></script>
@@ -60,5 +41,13 @@
 
     <!-- Game Script -->
     <script src="./src/MyGame/MyGame.js"></script>
+</head>
+<body onload="
+    var myGame = new MyGame();
+    hEngine.Core.initializeEngineCore('game-viewport', myGame);
+">
+    <canvas width='640' height='480' id='game-viewport'></canvas>
+
+    
 </body>
 </html>

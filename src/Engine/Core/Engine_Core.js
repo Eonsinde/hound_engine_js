@@ -19,10 +19,16 @@ hEngine.Core = (function(){ // the function is defined and automatically called 
         }
     }
 
-    var initializeEngineCore = function(htmlCanvasID) {
+    var initializeEngineCore = function(htmlCanvasID, myGame) {
         _initializeWebGL(htmlCanvasID);
         hEngine.VertexBuffer.initialize();
         hEngine.Input.initialize();
+        hEngine.DefaultResources.initialize(function() { startScene(myGame); } );
+    };
+
+    var startScene = function(myGame) {
+        myGame.initialize.call(myGame); // Called in this way to keep correct context
+        hEngine.GameLoop.start(myGame); // start the game loop after initialization
     };
 
     // set clear color for the color buffer

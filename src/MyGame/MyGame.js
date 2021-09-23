@@ -8,14 +8,7 @@ function MyGame(htmlCanvasID) {
     // the squares
     this.mWhiteSq = null;
     this.mRedSq = null;
-
-    // initialize webGl context
-    hEngine.Core.initializeEngineCore(htmlCanvasID);
-
-    // initialize game
-    this.initialize();
 }
-
 
 MyGame.prototype.initialize = function(){
     var gl = hEngine.Core.getGL();
@@ -23,7 +16,7 @@ MyGame.prototype.initialize = function(){
     let vHeight = gl.canvas.clientHeight; // viewport height
 
     // The shader for drawing
-    this.mConstColorShader = new SimpleShader("vertex", "fragment");
+    this.mConstColorShader = hEngine.DefaultResources.getConstColorShader();
     this.mCamera = new Camera2D(
         vec2.fromValues(0, 0),
         20,
@@ -34,26 +27,16 @@ MyGame.prototype.initialize = function(){
     this.mWhiteSq.setColor([1, 0, 1, 1]);
     this.mRedSq = new Renderable(this.mConstColorShader);
     this.mRedSq.setColor([1, 0, 0, 1]);
-   
-    // start game loop
-    hEngine.GameLoop.start(this);
 }
 
 // The update function, updates the application state. Make sure to _NOT_ draw
 // anything from this function!
 MyGame.prototype.update = function() {
-    // this.mWhiteSq.getTransformComponent().setPosition(.5, .5);
-    // // For this very simple game, let's move the white square and pulse the red
-    // // Step A: move the white square
-    // var whiteTransform = this.mWhiteSq.getTransformComponent();
-    // // var deltaX = 0.05;
-    
-    // // if (whiteTransform.getXPos() > 30) // this is the right-bound of the window
-    // //     whiteTransform.setPosition(10, 60);
-    // // whiteTransform.incXPosBy(deltaX);
-    // whiteTransform.incRotationByDegree(1);
-    
-    // // // Step B: pulse the red square
+    if (hEngine.Input.isKeyClicked(hEngine.Input.keys.Zero)){
+        console.log("Zero clicked");
+        hEngine.TextFileLoader.loadTextFile("assets/Shazam.img");
+    }
+
     if (hEngine.Input.isKeyPressed(hEngine.Input.keys.Up)){
         var redTransform = this.mRedSq.getTransformComponent();
         if (redTransform.getWidth() > 1)
@@ -79,6 +62,3 @@ MyGame.prototype.draw = function() {
     this.mWhiteSq.draw(this.mCamera.getVPMatrix());
     this.mRedSq.draw(this.mCamera.getVPMatrix());
 };
-
-
-document.body.onload = new MyGame("game-viewport");

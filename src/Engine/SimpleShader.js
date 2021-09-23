@@ -1,6 +1,6 @@
 // basic shader class
 
-function SimpleShader(vertexShaderID, fragmentShaderID) {
+function SimpleShader(vertexShaderPath, fragmentShaderPath, htmlLoad=false) {
     // instance variables (Convention: all instance variables: mVariables)
     this.mProgram = null;
     this.mShaderVertexPositionAttribute = null;
@@ -12,8 +12,18 @@ function SimpleShader(vertexShaderID, fragmentShaderID) {
     var gl = hEngine.Core.getGL(); // get engine's WebGL context object
    
     // Step A: load and compile vertex and fragment shaders
-    var vertexShader = this._loadAndCompileShaderFromHTML(vertexShaderID, gl.VERTEX_SHADER);
-    var fragmentShader = this._loadAndCompileShaderFromHTML(fragmentShaderID, gl.FRAGMENT_SHADER);
+    // load from HTML or File
+    var vertexShader, fragmentShader;
+    if (htmlLoad){ // use HTML tag 
+        vertexShader = this._loadAndCompileShaderFromHTML(vertexShaderPath, gl.VERTEX_SHADER);
+        fragmentShader = this._loadAndCompileShaderFromHTML(fragmentShaderPath, gl.FRAGMENT_SHADER);
+    }else{
+        // vertexShader = this._loadAndCompileShaderRemote(vertexShaderPath, gl.VERTEX_SHADER);
+        // fragmentShader = this._loadAndCompileShaderRemote(fragmentShaderPath, gl.FRAGMENT_SHADER);
+        vertexShader = this._compileShaderDefaultRes(vertexShaderPath, gl.VERTEX_SHADER);
+        fragmentShader = this._compileShaderDefaultRes(fragmentShaderPath, gl.FRAGMENT_SHADER);
+    }
+    
    
     // Step B: Create and link the shaders into a program.
     this.mProgram = gl.createProgram();
@@ -65,31 +75,21 @@ SimpleShader.prototype._loadAndCompileShaderFromHTML = function(id, shaderType) 
     return compiledShader;
 };
 
+// using default resources; no need for loading
+SimpleShader.prototype._compileShaderDefaultRes = function(filePath, shaderType){
+    var gl = hEngine.Core.getGL();
 
-SimpleShader.prototype._loadAndCompileShaderFromFile = function(filePath, shaderType){
+    let shaderCode=null, compiledShader=null;
+    shaderCode = hEngine.ResourceMap.retrieveAsset(filePath);
 
-}
-
-SimpleShader.prototype._loadAndCompileShaderFromNetwork = function(filePath, shaderType){
-    xmlReq = new XMLHttpRequest();
-    xmlReq.open('GET', filePath, false);
-
-    try {
-        xmlReq.send();
-    } catch (error) {
-        alert("Failed to load shader: " + filePath);
-        return null;
-    }
-    shaderSource = xmlReq.responseText;
-
-    if (shaderSource === null) {
+    if (shaderCode === null) {
         alert("WARNING: Loading of:" + filePath + " Failed!");
         return null;
     }
 
-    let compiledShader = gl.createShader(shaderType);
+    compiledShader = gl.createShader(shaderType);
     // Step C: Compile the created shader
-    gl.shaderSource(compiledShader, shaderSource);
+    gl.shaderSource(compiledShader, shaderCode);
     gl.compileShader(compiledShader);
     
     if (!gl.getShaderParameter(compiledShader, gl.COMPILE_STATUS)) {
@@ -99,6 +99,36 @@ SimpleShader.prototype._loadAndCompileShaderFromNetwork = function(filePath, sha
     return compiledShader;
 }
 
+SimpleShader.prototype._loadAndCompileShaderRemote = function(filePath, shaderType){
+    var gl = hEngine.Core.getGL();
+    var xmlReq = new XMLHttpRequest();
+    xmlReq.open('GET', filePath, false);
+
+    try {
+        xmlReq.send();
+    } catch (error) {
+        alert("Failed to load shader: " + filePath);
+        return null;
+    }
+    
+    let shaderCode = xmlReq.responseText;
+
+    if (shaderCode === null) {
+        alert("WARNING: Loading of:" + filePath + " Failed!");
+        return null;
+    }
+
+    var compiledShader = gl.createShader(shaderType);
+    // Step C: Compile the created shader
+    gl.shaderSource(compiledShader, shaderCode);
+    gl.compileShader(compiledShader);
+    
+    if (!gl.getShaderParameter(compiledShader, gl.COMPILE_STATUS)) {
+        alert("A shader compiling error occurred: " +
+        gl.getShaderInfoLog(compiledShader));
+    }
+    return compiledShader;
+}
 
 SimpleShader.prototype.activateShader = function(pixelColor, vpMatrix) {
     var gl = hEngine.Core.getGL();
